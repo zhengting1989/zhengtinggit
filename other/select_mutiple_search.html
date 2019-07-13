@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .datalist {
+            width:300px;
+        }
+        #search-input,.sel,#search-input input,.sel select {
+            display: inline-block;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .sel {
+            height: 150px;
+            overflow: auto;
+            border: 1px solid #ccc;
+        }
+        ul li {
+            list-style: none;
+        }
+        ul {
+            padding-inline-start: 10px;
+            margin-block-start: 10px;
+            margin-block-end: 10px;
+        }
+    </style>
+    <script src="../lib/jquery/1.9.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="datalist">
+        <div id="search-input">
+            <input type="text" placeholder="请输入要搜索的内容" id="keywords">
+        </div>
+        <div class="sel">
+            <!-- <select name="sel-list" id="sel-list" multiple="multiple">
+            </select> -->
+            <ul name="sel-list" id="sel-list">
+
+            </ul>
+        </div>
+    </div>
+    <script>
+        var list = [
+            {id:1,name:"数据1"},
+            {id:2,name:"数据2"},
+            {id:3,name:"数据3"},
+            {id:4,name:"数据4"},
+            {id:5,name:"数据5"},
+            {id:6,name:"数据6"},
+            {id:7,name:"数据7"},
+            {id:8,name:"数据8"},
+            {id:9,name:"数据9"},
+            {id:10,name:"数据10"},
+            {id:11,name:"数据11"},
+            {id:12,name:"数据12"},
+            {id:13,name:"数据13"},
+            {id:14,name:"数据14"},
+            {id:15,name:"数据15"},
+            {id:16,name:"数据16"},
+            {id:17,name:"数据17"},
+            {id:18,name:"数据18"}
+        ]
+        var selectedList = [];
+        $(document).ready(function(){
+            setSelectOptin(list)
+            optionClickEvent()
+        })
+        function setSelectOptin(dateList){
+            var options = ``;
+            dateList.forEach(element => {
+                options += `<li><label for="`+element.id+`" class="label-check"><input type="checkbox" id="`
+                +element.id+`" name="checkbox"  value="`+element.name+`"/></label>`+element.name+`</li>`
+            })
+            $('#sel-list').append(options)
+        }
+        $("#search-input").keyup((e)=>{
+            if(e.keyCode == 13){
+                var searchList=[];
+                var keyword = $("#keywords").val();
+                $('#sel-list li').remove()
+                if(keyword){
+                    list.forEach(item=>{
+                        if(item.name.indexOf(keyword) != -1){
+                            searchList.push(item)
+                        }
+                    })
+                    setSelectOptin(searchList)
+                }else{
+                    setSelectOptin(list)
+                }
+            }
+        })
+        function optionClickEvent(){
+            $('#sel-list li').click((e)=>{
+               var selected = $('#sel-list li input:checked')
+               if(selected && selected.length!=0){
+                    var keys='';
+                    for(var i=0;i<selected.length;i++){
+                        if(keys.length==0){
+                            keys=selected[i].value
+                        }else{
+                            keys+=','+selected[i].value
+                        }
+                    }
+                    $('#keywords').val(keys)
+               }else{
+                    $('#keywords').val('')
+               }
+            })
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./select_mutiple_search.css">
+    <script src="../../../lib/jquery/1.9.1/jquery.min.js"></script>
+    <script src="./select_mutiple_search.js"></script>
+</head>
+<body>
+    <h3>单选+搜索功能下拉选</h3>
+    <form action="">
+        <div id="aa" class="ss"></div>
+    </form>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <h3>多选+搜索功能下拉选</h3>
+    <div id="bb"></div>
+    <script>
+        var data=[
+            {id:1,name:"数据1"},
+            {id:2,name:"数据2"},
+            {id:3,name:"数据3"},
+            {id:4,name:"数据4"},
+            {id:5,name:"数据5"},
+            {id:6,name:"数据6"},
+            {id:7,name:"数据7"},
+            {id:8,name:"数据8"},
+            {id:9,name:"数据9"},
+            {id:10,name:"数据10"},
+            {id:11,name:"数据11"},
+            {id:12,name:"数据12"},
+            {id:13,name:"数据13"},
+            {id:14,name:"数据14"},
+            {id:15,name:"数据15"},
+            {id:16,name:"数据16"},
+            {id:17,name:"数据17"},
+            {id:18,name:"数据18"}
+        ]
+        var data1=[
+            {id:31,name1:"31"},
+            {id:23,name1:"23"},
+            {id:43,name1:"数据43"},
+            {id:44,name1:"44"},
+            {id:54,name1:"54"},
+            {id:64,name1:"64"},
+            {id:74,name1:"74"},
+            {id:84,name1:"84"}
+        
+        ]
+        $(document).ready(()=>{
+            // 使用时必须为 $(id).dropDown()
+            $('#bb').dropDown({
+                initListData:data1
+            })
+            $('#aa').dropDown({
+                type:'radio',
+                initListData:data,
+                returnParametersId:'moudleId',//获取到id key
+                returnParametersName:'MODUname'
+            })
+        })
+    </script>
+</body>
+</html>

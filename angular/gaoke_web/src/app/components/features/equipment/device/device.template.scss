@@ -1,0 +1,66 @@
+.height-full {
+  height: 100%;
+  padding-right: 0;
+}
+
+.height-scroll {
+  overflow-y: auto;
+}
+
+.height-fullbody {
+  height: calc(100% - 40px);
+}
+
+.float-right {
+  float: right;
+}
+
+.float-left {
+  float: left;
+}
+
+.no-padding-right {
+  padding-right: 0
+}
+
+.modal-border {
+  border: 1px solid #aaa2a2;
+  border-bottom: none;
+  border-radius: 5px 5px 0px 0;
+}
+
+.modal-body-border {
+  border: 1px solid #aaa2a2;
+}
+
+.little {
+  background: #ccc;
+  padding: 8px 0;
+  margin-bottom: 10px;
+}
+
+bs-datepicker-container {
+  z-index: 99999 !important;
+}
+
+.tab-container .nav > li.active {
+  border-left: none !important;
+}
+
+.btn-radiu button {
+  margin-right: 10px;
+}
+
+.btn-radiu button:last-child {
+  margin-right: 0px;
+}
+
+.btn-radiu button:first-child {
+}
+
+.negative {
+  color: red;
+}
+.tdcenter{
+  vertical-align: middle;
+}

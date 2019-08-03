@@ -1,0 +1,40 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{title}}软件版本</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body" style="padding-bottom: 10px;" id="modal-body">
+    <div class="row">
+        <ng-container *ngFor="let item of plformList,let dx = index;">
+            <div class="col-lg-3 col-md-3 col-sm-3 text-right" style="padding-top: 8px;">{{item.name}}</div>
+            <div class="col-lg-9 col-md-9 col-sm-9" style="position: relative;">
+                <input [(ngModel)]="item.value" class="form-control" type="text" *ngIf='item.type=="text"'
+                       placeholder="请输入{{item.name}}" maxlength="255">
+                <input [(ngModel)]="item.value" class="form-control" type="text" *ngIf='item.type=="number"'
+                       placeholder="请输入{{item.name}}" (keyup)="key($event,dx)">
+                <label class="ui-upload btn-primary" *ngIf='item.type=="file"&&title!="修改"'>上传文件<input
+                        style="display: none;" type="file" (change)="fileChange($event)" placeholder="上传文件"></label>
+                <label class="ui-upload btn-primary" *ngIf='item.type=="file"&&title=="修改"'>重新上传 <input
+                        style="display: none;" type="file" (change)="fileChange($event)" placeholder="重新上传文件"></label>
+                <span *ngIf='item.type=="file"'>{{inputName}} &nbsp;&nbsp;&nbsp;<span
+                        [ngClass]="{'red':!feehisflag,'green':feehisflag}">{{inputFlag}}</span></span>
+                <select class="form-control" *ngIf='item.type=="select"' [(ngModel)]="item.value">
+                    <option *ngFor="let option of item.list" value="{{option.softwareId}}">{{option.name}}
+                    </option>
+                </select>
+                <span class="help-block m-b-none text text-warning">
+        <span *ngIf="item.required==true&&item.value==''&&title!='修改'">*{{item.name}}为必填项{{item.value}}</span>
+        <span *ngIf="item.required==true&&item.value==''&&title=='修改'&&(item.lable=='version'||item.lable=='build')">*{{item.name}}为必填项{{item.value}}</span>
+      </span>
+            </div>
+        </ng-container>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">取消</button>
+    <button type="submit" class="btn btn-primary" *ngIf='title!="修改"' [disabled]="!addFlag" (click)="subime()">提交
+    </button>
+    <button type="submit" class="btn btn-primary" *ngIf='title=="修改"' [disabled]="!ediltFlag" (click)="subime()">提交
+    </button>
+</div>

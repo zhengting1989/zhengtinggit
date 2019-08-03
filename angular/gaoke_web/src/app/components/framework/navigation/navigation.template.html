@@ -1,0 +1,55 @@
+<nav class="navbar-default navbar-static-side" role="navigation"
+     style="background-color: #2f4050;z-index: 100!important;height: 100%;overflow-y: auto;">
+    <div class="sidebar-collapse">
+        <ul class="nav metismenu" id="side-menu">
+            <li class="nav-header">
+                <div class="profile-element" dropdown>
+                    <img alt="image" class="img-circle img-md"
+                         (click)="goSelfPage()"
+                         style="cursor:pointer;"
+                         *ngIf="!loginUser?.unificationFaIcon"
+                         src="assets/images/{{loginUser?.unificationType ? loginUser?.unificationType+'.png' : 'profile_small.jpg'}}">
+
+                    <img alt="image" class="img-circle img-md"
+                         (click)="goSelfPage()"
+                         style="cursor:pointer;"
+                         *ngIf="loginUser?.unificationFaIcon"
+                         [src]="'data:image/jpg;base64,' + loginUser?.unificationFaIcon">
+                    <a (click)="goSelfPage()">
+                        <span class="block m-t-xs">
+                            <strong class="font-bold"> {{loginUser?.userName}}</strong>
+                        </span>
+                        <span class="text-muted text-xs block">
+                             {{loginUser?.parentUnificationName? loginUser?.parentUnificationName+ ' / ':''}}
+                            {{loginUser?.unificationName}}
+                        </span>
+                    </a>
+                </div>
+                <div class="logo-element">
+                    系统
+                </div>
+            </li>
+            <li [ngClass]="{active: activeRoute(sideMenu.activeRoute)}" *ngFor="let sideMenu of sideMenus">
+                <a *ngIf="sideMenu?.childMenus?.length <= 0" (click)="gotoActiveRoute(sideMenu)">
+                    <i class="{{sideMenu.faIcon}}"></i>
+                    <span class="nav-label">{{sideMenu.name}}</span>
+                </a>
+                <a href="#" *ngIf="sideMenu?.childMenus?.length > 0">
+                    <i class="{{sideMenu.faIcon}}"></i>
+                    <span class="nav-label">{{sideMenu.name}}</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level collapse"
+                    *ngIf="sideMenu?.childMenus?.length > 0"
+                    [ngClass]="{in: activeRoute(sideMenu.activeRoute)}">
+                    <li [ngClass]="{active: activeRoute(sideMenuChildren.activeRoute)}"
+                        *ngFor="let sideMenuChildren of sideMenu.childMenus">
+                        <a (click)="gotoActiveRoute(sideMenuChildren)">
+                            {{sideMenuChildren.name}}
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>

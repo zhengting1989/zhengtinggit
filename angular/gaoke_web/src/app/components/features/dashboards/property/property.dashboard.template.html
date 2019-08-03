@@ -1,0 +1,42 @@
+<div class="row" style="padding-left: 4px!important;">
+    <div class="col-lg-7" style="padding-left: 1px!important;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                物业实时出勤详情
+            </div>
+            <div class="panel-body" style="height: 400px;">
+                <atnd-dashboard-property-common-pie
+                        [unificationId]="unificationId"
+                        [dashboardData]="single">
+                </atnd-dashboard-property-common-pie>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5" style="padding-left: 1px!important;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                各项目实时出勤率
+            </div>
+            <div class="panel-body" style="height: 400px;">
+                <atnd-dashboard-property-bar [dashboardData]="items">
+                </atnd-dashboard-property-bar>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" style="padding-left: 4px!important;">
+    <div class="col-lg-6" style="padding-left: 1px!important;" *ngFor="let project of projects;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                【{{project?.unificationName}}】实时出勤详情
+            </div>
+            <div class="panel-body" style="height: 300px;">
+                <atnd-dashboard-property-common-pie
+                        [unificationId]="project?.unificationId"
+                        [dashboardData]="project?.items"
+                        [project]="project">
+                </atnd-dashboard-property-common-pie>
+            </div>
+        </div>
+    </div>
+</div>

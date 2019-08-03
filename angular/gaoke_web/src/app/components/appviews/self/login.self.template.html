@@ -1,0 +1,174 @@
+<div class="wrapper wrapper-content">
+    <div class="col-lg-12">
+        <div class="ibox">
+            <div class="ibox-content">
+                <form class="m-t form-horizontal" role="form" name="form"
+                      (ngSubmit)="usersForm.form.valid && updateUser()"
+                      #usersForm="ngForm"
+                      novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="col-md-12">
+                                <div class="profile-image">
+                                    <img alt="image" class="img-circle img-lg"
+                                         *ngIf="!loginUser?.unificationFaIcon"
+                                         src="assets/images/{{loginUser?.unificationType}}.png">
+
+                                    <img alt="image"  class="img-circle img-lg"
+                                         *ngIf="loginUser?.unificationFaIcon"
+                                         [src]="'data:image/jpg;base64,' + loginUser?.unificationFaIcon" >
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div>
+                                    <h2 class="no-margins">
+                                        {{loginUser?.groupNames}}
+                                    </h2>
+                                    <small>
+                                        {{loginUser?.parentUnificationName? loginUser?.parentUnificationName+ ' / ':''}}
+                                        {{loginUser?.unificationName}}
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="activity-stream">
+                                    <div class="stream">
+                                        <div class="stream-badge">
+                                            <i class="fa fa-circle"></i>
+                                        </div>
+                                        <div class="stream-panel">
+                                            <div class="stream-info">
+                                                <strong>账号&nbsp;&nbsp;</strong>
+                                                <span class="label label-primary" style="margin-right: 50px;">
+                                                {{loginUser?.loginId}}
+                                            </span>
+                                                <strong>状态&nbsp;&nbsp;</strong>
+                                                <span class="label label-danger" *ngIf="!loginUser?.status">
+                                                离职
+                                            </span>
+                                                <span class="label label-primary" *ngIf="loginUser?.status">
+                                                在职
+                                            </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="stream">
+                                        <div class="stream-badge">
+                                            <i class="fa fa-circle"></i>
+                                        </div>
+                                        <div class="stream-panel">
+                                            <div class="stream-info">
+                                                <strong>密码</strong>
+                                            </div>
+                                            <strong>********</strong>
+                                        </div>
+                                    </div>
+                                    <div class="stream">
+                                        <div class="stream-badge">
+                                            <i class="fa fa-circle"></i>
+                                        </div>
+                                        <div class="stream-panel">
+                                            <div class="stream-info">
+                                                <strong>姓名 </strong>
+                                            </div>
+                                            <strong>{{loginUser?.userName}}</strong>
+                                        </div>
+                                    </div>
+                                    <div class="stream">
+                                        <div class="stream-badge">
+                                            <i class="fa fa-circle"></i>
+                                        </div>
+                                        <div class="stream-panel">
+                                            <div class="stream-info">
+                                                <strong>员工号</strong>
+                                            </div>
+                                            <strong>{{loginUser?.userNo}}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="activity-stream">
+                                <div class="stream">
+                                    <div class="stream-badge">
+                                        <i class="fa fa-circle"></i>
+                                    </div>
+                                    <div class="stream-panel">
+                                        <div class="stream-info">
+                                            <strong>身份证号码</strong>
+                                        </div>
+                                        <strong>{{loginUser?.idnumber}}</strong>
+                                    </div>
+                                </div>
+                                <div class="stream">
+                                    <div class="stream-badge">
+                                        <i class="fa fa-circle"></i>
+                                    </div>
+                                    <div class="stream-panel">
+                                        <div class="stream-info">
+                                            <strong>邮箱</strong>
+                                        </div>
+                                        <strong>{{loginUser?.email?loginUser?.email:''}}</strong>
+                                    </div>
+                                </div>
+                                <div class="stream">
+                                    <div class="stream-badge">
+                                        <i class="fa fa-pencil  bg-primary"></i>
+                                    </div>
+                                    <div class="stream-panel">
+                                        <div class="stream-info">
+                                            <strong>现居地</strong>
+                                        </div>
+                                        <input type="text" class="form-control" [(ngModel)]="loginUser.living"
+                                               name="living" #living="ngModel"
+                                               maxlength="255"
+                                               (change)="loginUser.living=loginUser.living.trim()"/>
+                                    </div>
+                                </div>
+                                <div class="stream">
+                                    <div class="stream-badge">
+                                        <i class="fa fa-circle"></i>
+                                    </div>
+                                    <div class="stream-panel">
+                                        <div class="stream-info">
+                                            <strong>户口所在地</strong>
+                                        </div>
+                                        <strong>{{loginUser?.address?loginUser?.address:''}}</strong>
+                                    </div>
+                                </div>
+                                <div class="stream">
+                                    <div class="stream-badge">
+                                        <i class="fa fa-pencil  bg-primary"></i>
+                                    </div>
+                                    <div class="stream-panel">
+                                        <div class="stream-info">
+                                            <strong>备注</strong>
+                                        </div>
+                                        <textarea class="form-control" name="remark" style="resize: none;"
+                                                  [(ngModel)]="loginUser.remark" #address="ngModel"
+                                                  onchange="this.value=this.value.substring(0, 180)"
+                                                  onkeydown="this.value=this.value.substring(0, 180)"
+                                                  onkeyup="this.value=this.value.substring(0, 180)"
+                                                  placeholder="请填写备注" rows="4" cols="120">
+                                    </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12" style="height: 20px;">
+                            <div class="col-md-9"></div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-warning" (click)="resetPassword()">更新密码
+                                </button>
+                                <button type="submit" class="btn btn-primary"
+                                        [disabled]="(!usersForm.form.valid)&&isSave">更新个人信息
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

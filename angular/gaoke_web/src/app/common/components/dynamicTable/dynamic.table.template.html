@@ -1,0 +1,127 @@
+<div style="padding: 15px 15px;">
+    <div class="row">
+        <div class="col-sm-5 m-b-xs">
+            <div data-toggle="buttons" class="btn-group">
+                <button class="btn btn-primary btn-bitbucket"
+                        (click)="toEdit()" hide-node
+                        *ngIf="tableOption?.addBtn"
+                        style="margin-right: 10px;border-radius:3px;">
+                    <i class="fa fa-plus"></i>&nbsp;新增
+                </button>
+                <ng-container *ngFor="let globalMethod of tableOption?.globalMethods;">
+                    <button class="{{globalMethod.class}}"
+                            *ngIf="checkedAccess(globalMethod)"
+                            (click)="onGlobalMethod(globalMethod)"
+                            [disabled]="countSingleCheckBox == 0 && globalMethod.checkboxUsed"
+                            style="margin-right: 10px;border-radius:3px;">
+                        <i class="{{globalMethod.faIcon}}"></i>&nbsp;{{globalMethod.label}}
+                    </button>
+                </ng-container>
+                <button class="btn btn-danger  btn-bitbucket"
+                        (click)="toDeletes()" hide-node
+                        *ngIf="tableOption?.delBtn"
+                        [disabled]="countSingleCheckBox == 0"
+                        style="margin-right: 10px;border-radius:3px;">
+                    <i class="fa fa-trash-o"></i>&nbsp;删除
+                </button>
+            </div>
+        </div>
+        <div class="col-sm-7">
+            <div class="input-group" *ngIf="tableOption?.searchBtn">
+                <input type="text"
+                       placeholder="{{tableOption?.searchPlaceholder ? tableOption?.searchPlaceholder : '输入关键字进行搜索' }}"
+                       [(ngModel)]="keyWords"
+                       class="form-control"
+                       (keypress)="searchByKeywords($event)">
+                <span class="input-group-btn">
+                        <button type="button" class="btn btn-primary" (click)="toSearch()">
+                            <i class="fa fa-search"></i>搜索
+                        </button>
+                    </span>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th *ngIf="checkBox">
+                    <input type="checkbox" name="checkboxAll"
+                           #tableAllCheckBox
+                           id="saveUserNameCheckBox"
+                           [(ngModel)]="checkboxAll"
+                           (change)="onChangeAllCheckBox(tableAllCheckBox.checked)"/>
+                </th>
+                <th>
+                    序号
+                </th>
+                <ng-container *ngFor="let column of columns;let dx = index">
+                    <th *ngIf="!column.hidden" (click)="toSort(column,dx)"
+                        [ngStyle]="{'cursor':column.orderBy ? 'pointer' : 'default','position':'relative'}"
+                        class="thionic">
+                        {{column.name}}&nbsp;
+                        <i class="fa fa-sort-{{column.orderBy | lowercase}}" id="sortIon{{dx}}" *ngIf="column.orderBy"
+                           style="display:none;"></i>
+                    </th>
+                </ng-container>
+                <th *ngIf="!tableOption?.hideWorkbench">
+                    操作
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let tbodyData of tbodyDatas;let idx = index; ">
+                <td *ngIf="checkBox">
+                    <input type="checkbox" name="singleCheckBox"
+                           [(ngModel)]="tbodyData.checked"
+                           [checked]="tbodyData.checked"
+                           (change)="onChangeSingleCheckBox(tbodyData.checked)"/>
+                </td>
+                <td>{{(idx+1)+(pageIndex-1)*perPageNo}}</td>
+                <ng-container *ngFor="let column of columns;">
+                    <td *ngIf="!column.hidden"
+                        [innerHTML]="column.formatter ? column.formatter(tbodyData[column.value]):(tbodyData[column.value]?tbodyData[column.value]:'')">
+                    </td>
+                </ng-container>
+                <td *ngIf="!tableOption?.hideWorkbench">
+                    <button class="btn btn-sm btn-white"
+                            *ngIf="tableOption?.putBtn"
+                            type="button" hide-node
+                            (click)="toEdit(tbodyData)">
+                        <i class="fa fa-edit"></i>&nbsp;修改
+                    </button>
+                    <button class="btn btn-sm btn-white"
+                            *ngIf="tableOption?.detailBtn"
+                            type="button"
+                            (click)="toDetail(tbodyData)">
+                        <i class="fa fa-eye"></i>&nbsp;明细
+                    </button>
+                    <ng-container *ngFor="let singleMethod of tableOption?.singleMethods">
+                        <button class="{{singleMethod.class}}" style="margin-right: 2px;"
+                                *ngIf="checkedAccess(singleMethod)"
+                                type="button" (click)="onSingleMethod(singleMethod,tbodyData)">
+                            <i class="{{singleMethod.faIcon}}"></i>&nbsp;{{singleMethod.label}}
+                        </button>
+                    </ng-container>
+                </td>
+            </tr>
+            </tbody>
+            <tbody>
+            <tr *ngIf="tbodyDatas.length == 0">
+                <td colspan="100%" class="text-center">没有记录!</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <th colspan="100%">
+                    <atnd-dynamic-pagination
+                            [perPageNo]="perPageNo"
+                            [total]="total"
+                            (onChanged)="onPaginationChanged($event)">
+                    </atnd-dynamic-pagination>
+                </th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

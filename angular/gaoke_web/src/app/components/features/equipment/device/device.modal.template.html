@@ -1,0 +1,410 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">{{title}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body" style="padding-bottom: 10px;">
+    <tabset *ngIf="title=='新增设备' || (title=='修改设备'&&nodeModel.nodeType == 'platform')|| (title=='批量修改设备'&&nodeModel.nodeType == 'platform')">
+        <tab heading="基本信息">
+            <div class="row little">安装信息</div>
+            <div class="row">
+                <ng-container *ngFor="let item of editColumns">
+                    <div class="col-lg-2 text-right" style="padding-top: 8px;">{{item.name}}</div>
+                    <div class="col-lg-4">
+                        <input [readonly]='item.readonly' [(ngModel)]="item.value"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <span class="help-block m-b-none text text-danger">
+                        </span>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="row little">配置信息</div>
+            <div class="row">
+                <ng-container *ngFor="let item of pzColumns,let index = index;">
+                    <div class="col-lg-2 text-right" *ngIf="title!='批量修改设备'" style="padding-top: 8px;">{{item.name}}
+                    </div>
+                    <div class="col-lg-2 text-right" *ngIf="title=='批量修改设备' && item.hide!=true"
+                         style="padding-top: 8px;">{{item.name}}
+                    </div>
+                    <div class="col-lg-4" *ngIf="title=='批量修改设备' && item.hide!=true">
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text' && title!='批量修改设备'"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text' && item.hide!=true && title=='批量修改设备'"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <select class="form-control" *ngIf="item.type=='select'" [(ngModel)]="item.value">
+                            <option *ngFor="let option of item.list" value="{{option.lable}}">{{option.name}}
+                            </option>
+                        </select>
+                        <select class="form-control" *ngIf="item.type=='selecttype'" [(ngModel)]="item.value">
+                            <option *ngFor="let option of deviceType" value="{{option.typeId}}">{{option.name}}
+                            </option>
+                        </select>
+                        <select class="form-control" *ngIf="item.type=='selectsoft'" [(ngModel)]="item.value">
+                            <option *ngFor="let option of deviceSoftware,let dx = index" value="{{dx}}">{{option.name}}
+                            </option>
+                        </select>
+                        <span class="help-block m-b-none text text-danger">
+                        </span>
+                    </div>
+                    <div class="col-lg-4" *ngIf="title!='批量修改设备'">
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text'&&item.lable=='sn'"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" (keyup)="keyup(item)" (blur)='checkSN("device",item)'
+                               (focus)='focusSN("device",item)' maxlength="200" (keyup)="trim('device',index)">
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text'&&item.lable!='sn'"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <select class="form-control" *ngIf="item.type=='select'" [(ngModel)]="item.value">
+                            <option *ngFor="let option of item.list" value="{{option.lable}}">{{option.name}}
+                            </option>
+                        </select>
+                        <select class="form-control" *ngIf="item.type=='selecttype'" [(ngModel)]="item.value">
+                            <option *ngFor="let option of deviceType" value="{{option.typeId}}">{{option.name}}
+                            </option>
+                        </select>
+                        <select class="form-control" *ngIf="item.type=='selectsoft'" [(ngModel)]="item.value">
+                            <option *ngFor="let option of deviceSoftware,let dx = index" value="{{dx}}">{{option.name}}
+                            </option>
+                        </select>
+                        <span class="help-block m-b-none text text-warning">
+                         <span *ngIf="item.required==true&&item.value==''">*{{item.name}}为必填项{{item.value}}</span>
+                        </span>
+                        <span class="help-block m-b-none text text-danger">
+                            <span *ngIf="item.lable=='sn'&&isOneDeviceSn">*{{item.name}}不能重复！</span>
+                           </span>
+                    </div>
+                </ng-container>
+            </div>
+        </tab>
+        <tab heading="模块信息" *ngIf="title!='批量修改设备'">
+            <div class="row little">功能配置
+                <span class="float-right" style="color:#137dea;margin-right: 15px;cursor: pointer;user-select: none;"
+                      (click)='addmodul()'>添加模块</span>
+            </div>
+            <div class="row" *ngFor="let items of modulePage,let dx = index;">
+                <div class="row text-right">
+                    <h4>模块{{dx+1}}
+                        <i class="fa fa-minus-circle" (click)='deleteModule(dx)'
+                           style="padding-right: 20px;cursor: pointer;color: #eb0e1f;float: right;user-select: none;"></i>
+                    </h4>
+                </div>
+                <ng-container *ngFor="let item of items,let key = index;">
+                    <div class="col-lg-2 control-label text-right" style="padding-top: 8px;">{{item.name}}</div>
+                    <div class="col-lg-4">
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text'&&item.lable=='sn' &&item.hide!=true"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" (keyup)="keyup(item,dx)"
+                               (blur)='checkSN("module",item,dx)' (focus)='focusSN("module",item)' maxlength="200" (keyup)="trim('module',dx,key)">
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text'&&item.lable!='sn' &&item.hide!=true"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <select class="form-control" *ngIf="item.type=='select' &&item.hide!=true"
+                                [(ngModel)]="item.value">
+                            <option *ngFor="let option of item.list" value="{{option.lable}}">{{option.name}}
+                            </option>
+                        </select>
+                        <span class="help-block m-b-none text text-warning">
+                                <span *ngIf="item.required==true&&item.value==''">*{{item.name}}为必填项</span>
+                        </span>
+                        <span class="help-block m-b-none text text-danger">
+                            <span *ngIf="item.lable=='sn'&&isOneModuleSnList[dx]">*{{item.name}}不能重复！</span>
+                           </span>
+                    </div>
+                </ng-container>
+            </div>
+        </tab>
+        <tab heading="模块信息" *ngIf="title=='批量修改设备'">
+            <div class="row little">功能配置
+            </div>
+            <div class="row" *ngFor="let items of modulePage,let dx = index;">
+                <div class="row text-right">
+                </div>
+                <ng-container *ngFor="let item of items,let key = index;">
+                    <div class="col-lg-2 control-label text-right" *ngIf='item.hide!=false' style="padding-top: 8px;">
+                        {{item.name}}
+                    </div>
+                    <div class="col-lg-4" *ngIf='item.hide!=false'>
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text' &&item.hide!=true"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <select class="form-control" *ngIf="item.type=='select' &&item.hide!=true"
+                                [(ngModel)]="item.value">
+                            <option *ngFor="let option of item.list" value="{{option.lable}}">{{option.name}}
+                            </option>
+                        </select>
+                        <span class="help-block m-b-none text text-danger">
+                        </span>
+                    </div>
+                </ng-container>
+            </div>
+        </tab>
+    </tabset>
+    <tabset *ngIf="title=='安装设备'">
+        <tab heading="安装信息">
+            <div class="row little">安装信息</div>
+            <div class="row">
+                <ng-container *ngFor="let item of plformList">
+                    <div class="col-lg-2 text-right" style="padding-top: 8px;">{{item.name}}</div>
+                    <div class="col-lg-4">
+                        <select class="form-control" (change)="asyncLoadFunction()" [(ngModel)]="item.value">
+                            <option *ngFor="let option of platformSelect" value="{{option.nodeInfo.unificationId}}">
+                                {{option.name}}
+                            </option>
+                        </select>
+                        <span class="help-block m-b-none text text-danger">
+                                </span>
+                    </div>
+                </ng-container>
+                <ng-container *ngFor="let item of deviceList">
+                    <div class="col-lg-2 text-right" style="padding-top: 8px;">{{item.name}}</div>
+                    <div class="col-lg-4">
+                        <search-select [searchOption]="asyncSearchOption" [showItems]="showItems"
+                                       (asyncLoadFunction)="asyncLoadFunction()"
+                                       (onSearchOnSelect)='onSearchOnSelect($event)'
+                                       (onKeyupOnSelect)='keyupOnSelect($event)'>
+                        </search-select>
+                        <span class="help-block m-b-none text text-warning">
+                            <span *ngIf="!installFlag">*{{item.name}}为必填项</span>
+                        </span>
+                    </div>
+                </ng-container>
+                <ng-container *ngFor="let item of installlist">
+                    <div class="col-lg-2 text-right" style="padding-top: 8px;">{{item.name}}</div>
+                    <div class="col-lg-4">
+                        <input [(ngModel)]="item.value" class="form-control ng-untouched ng-pristine ng-valid"
+                               type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <span class="help-block m-b-none text text-danger">
+                        </span>
+                    </div>
+                </ng-container>
+            </div>
+        </tab>
+        <tab heading="配置信息">
+            <div class="row little">配置信息</div>
+            <div class="row">
+                <ng-container *ngFor="let item of wlColumns">
+                    <div class="col-lg-2 text-right" style="padding-top: 8px;">{{item.name}}</div>
+                    <div class="col-lg-4">
+                        <input [(ngModel)]="item.value" class="form-control ng-untouched ng-pristine ng-valid"
+                               type="text"
+                               placeholder="请输入{{item.name}}">
+                        <span class="help-block m-b-none text text-danger">
+                            </span>
+                    </div>
+                </ng-container>
+            </div>
+        </tab>
+    </tabset>
+    <tabset *ngIf="(title=='批量修改设备'&&nodeModel.nodeType != 'platform') || (title=='修改设备'&&nodeModel.nodeType != 'platform')">
+        <tab heading="基本信息">
+            <div class="row little">安装信息</div>
+            <div class="row">
+                <ng-container *ngFor="let item of editColumns">
+                    <div class="col-lg-2 text-right" style="padding-top: 8px;">{{item.name}}</div>
+                    <div class="col-lg-4">
+                        <input [readonly]='item.readonly' [(ngModel)]="item.value"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <span class="help-block m-b-none text text-danger">
+                        </span>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="row little">配置信息</div>
+            <div class="row">
+                <ng-container *ngFor="let item of pzColumns,let index = index;">
+                    <div class="col-lg-2 text-right" *ngIf="title!='批量修改设备'" style="padding-top: 8px;">{{item.name}}
+                    </div>
+                    <div class="col-lg-2 text-right" *ngIf="title=='批量修改设备' && item.hide!=true"
+                         style="padding-top: 8px;">{{item.name}}
+                    </div>
+                    <div class="col-lg-4" *ngIf="title=='批量修改设备' && item.hide!=true">
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text' && title!='批量修改设备'"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text' && item.hide!=true && title=='批量修改设备'"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <select class="form-control" *ngIf="item.type=='select'" [(ngModel)]="item.value">
+                            <option *ngFor="let option of item.list" value="{{option.lable}}">{{option.name}}
+                            </option>
+                        </select>
+                        <select class="form-control" *ngIf="item.type=='selecttype'" [(ngModel)]="item.value">
+                            <option *ngFor="let option of deviceType" value="{{option.typeId}}">{{option.name}}
+                            </option>
+                        </select>
+                        <select class="form-control" *ngIf="item.type=='selectsoft'" [(ngModel)]="item.value">
+                            <option *ngFor="let option of deviceSoftware,let dx = index" value="{{dx}}">{{option.name}}
+                            </option>
+                        </select>
+                        <span class="help-block m-b-none text text-danger">
+                        </span>
+                    </div>
+                    <div class="col-lg-4" *ngIf="title!='批量修改设备'">
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text'&&item.lable=='sn'"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" (keyup)="keyup(item)" (blur)='checkSN("device",item)'
+                               (focus)='focusSN("device",item)' maxlength="200" (keyup)="trim('device',index)">
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text'&&item.lable!='sn'"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <select class="form-control" *ngIf="item.type=='select'" [(ngModel)]="item.value">
+                            <option *ngFor="let option of item.list" value="{{option.lable}}">{{option.name}}
+                            </option>
+                        </select>
+                        <select class="form-control" *ngIf="item.type=='selecttype'" [(ngModel)]="item.value">
+                            <option *ngFor="let option of deviceType" value="{{option.typeId}}">{{option.name}}
+                            </option>
+                        </select>
+                        <select class="form-control" *ngIf="item.type=='selectsoft'" [(ngModel)]="item.value">
+                            <option *ngFor="let option of deviceSoftware,let dx = index" value="{{dx}}">{{option.name}}
+                            </option>
+                        </select>
+                        <span class="help-block m-b-none text text-warning">
+                         <span *ngIf="item.required==true&&item.value==''">*{{item.name}}为必填项{{item.value}}</span>
+                        </span>
+                        <span class="help-block m-b-none text text-danger">
+                            <span *ngIf="item.lable=='sn'&&isOneDeviceSn">*{{item.name}}不能重复！</span>
+                           </span>
+                    </div>
+                </ng-container>
+            </div>
+        </tab>
+        <tab heading="模块信息" *ngIf="title!='批量修改设备'">
+            <div class="row little">功能配置
+                <span class="float-right" style="color:#137dea;margin-right: 15px;cursor: pointer;user-select: none;"
+                      (click)='addmodul()'>添加模块</span>
+            </div>
+            <div class="row" *ngFor="let items of modulePage,let dx = index;">
+                <div class="row text-left">
+                    <h4 style="padding-left: 20px;">模块{{dx+1}}</h4>
+                </div>
+                <ng-container *ngFor="let item of items,let key = index;">
+                    <div class="col-lg-2 control-label text-right" style="padding-top: 8px;">{{item.name}}</div>
+                    <div class="col-lg-4">
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text'&&item.lable=='sn' &&item.hide!=true"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" (keyup)="keyup(item,dx)"
+                               (blur)='checkSN("module",item,dx)' (focus)='focusSN("module",item)' maxlength="200" (keyup)="trim('module',dx,key)">
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text'&&item.lable!='sn' &&item.hide!=true"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <select class="form-control" *ngIf="item.type=='select' &&item.hide!=true"
+                                [(ngModel)]="item.value">
+                            <option *ngFor="let option of item.list" value="{{option.lable}}">{{option.name}}
+                            </option>
+                        </select>
+                        <span class="help-block m-b-none text text-warning">
+                                <span *ngIf="item.required==true&&item.value==''">*{{item.name}}为必填项</span>
+                        </span>
+                        <span class="help-block m-b-none text text-danger">
+                            <span *ngIf="item.lable=='sn'&&isOneModuleSnList[dx]">*{{item.name}}不能重复！</span>
+                           </span>
+                    </div>
+                </ng-container>
+            </div>
+        </tab>
+        <tab heading="模块信息" *ngIf="title=='批量修改设备'">
+            <div class="row little">功能配置
+            </div>
+            <div class="row" *ngFor="let items of modulePage,let dx = index;">
+                <div class="row text-right">
+                </div>
+                <ng-container *ngFor="let item of items,let key = index;">
+                    <div class="col-lg-2 control-label text-right" *ngIf='item.hide!=false' style="padding-top: 8px;">
+                        {{item.name}}
+                    </div>
+                    <div class="col-lg-4" *ngIf='item.hide!=false'>
+                        <input [(ngModel)]="item.value" *ngIf="item.type=='text' &&item.hide!=true"
+                               class="form-control ng-untouched ng-pristine ng-valid" type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <select class="form-control" *ngIf="item.type=='select' &&item.hide!=true"
+                                [(ngModel)]="item.value">
+                            <option *ngFor="let option of item.list" value="{{option.lable}}">{{option.name}}
+                            </option>
+                        </select>
+                        <span class="help-block m-b-none text text-danger">
+                        </span>
+                    </div>
+                </ng-container>
+            </div>
+        </tab>
+
+
+
+        <tab heading="安装信息" *ngIf="title=='修改设备'||title=='批量修改设备'">
+            <div class="row little" *ngIf="title=='修改设备'">安装信息</div>
+            <div class="row" *ngIf="title=='修改设备'">
+                <ng-container *ngFor="let item of installlist">
+                    <div class="col-lg-2 text-right" *ngIf="item.hide!=true" style="padding-top: 8px;">{{item.name}}
+                    </div>
+                    <div class="col-lg-4" *ngIf="item.hide!=true">
+                        <input [(ngModel)]="item.value" class="form-control ng-untouched ng-pristine ng-valid"
+                               type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <span class="help-block m-b-none text text-danger">
+                        </span>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="row little">设备信息</div>
+            <div class="row">
+                <div class="col-lg-2 text-right" style="padding-top: 8px;">激活状态</div>
+                <div class="col-lg-4">
+                   <ng-container *ngFor="let item of pzColumns,let index = index;">
+                        <select class="form-control" *ngIf="item.type=='select'&&item.lable=='activated'" [(ngModel)]="item.value">
+                                <option *ngFor="let option of item.list" value="{{option.lable}}">{{option.name}}
+                                </option>
+                            </select>
+                   </ng-container>
+                </div>
+            </div>
+        </tab>
+        <tab heading="配置信息" *ngIf="title=='修改设备'||title=='批量修改设备'">
+            <div class="row little">配置信息</div>
+            <div class="row" *ngIf="title!='修改设备'">
+                <ng-container *ngFor="let item of wlColumns">
+                    <div class="col-lg-2 text-right" *ngIf="item.hide!=true" style="padding-top: 8px;">{{item.name}}
+                    </div>
+                    <div class="col-lg-4" *ngIf="item.hide!=true">
+                        <input [(ngModel)]="item.value" class="form-control ng-untouched ng-pristine ng-valid"
+                               type="text"
+                               placeholder="请输入{{item.name}}" maxlength="255">
+                        <span class="help-block m-b-none text text-danger">
+                            </span>
+                    </div>
+                </ng-container>
+            </div>
+            <div class="row" *ngIf="title=='修改设备'">
+                <ng-container *ngFor="let item of wlColumns">
+                    <div class="col-lg-2 text-right" style="padding-top: 8px;">{{item.name}}</div>
+                    <div class="col-lg-4">
+                        <input [(ngModel)]="item.value" class="form-control ng-untouched ng-pristine ng-valid"
+                               type="text"
+                               placeholder="请输入{{item.name}}">
+                        <span class="help-block m-b-none text text-danger">
+                            </span>
+                    </div>
+                </ng-container>
+            </div>
+        </tab>
+    </tabset>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">取消</button>
+    <button type="submit" class="btn btn-primary" (click)="onSubmit('add')" *ngIf="title=='新增设备'" [disabled]='!addFlag'>
+        新增
+    </button>
+    <button type="submit" class="btn btn-primary" (click)="onSubmit('update')" *ngIf="title=='修改设备'"
+            [disabled]='!updateFlag'>修改
+    </button>
+    <button type="submit" class="btn btn-primary" (click)="onSubmit('allUpdate')" *ngIf="title=='批量修改设备'">批量修改</button>
+    <button type="submit" class="btn btn-primary" (click)="onSubmit('install')" *ngIf="title=='安装设备'"
+            [disabled]="!installFlag">安装
+    </button>
+</div>

@@ -1,0 +1,22 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">
+        {{timelist.fullDate}}&nbsp;&nbsp;{{timelist.userName}}&nbsp;&nbsp;<br>打卡次数&nbsp;&nbsp;{{timelist.records.length}}&nbsp;&nbsp;次</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body" style="padding-bottom: 10px;overflow-y: auto;" id="modal-body">
+    <div class="activity-stream">
+        <div class="stream" *ngFor="let item of timelist.records">
+            <div class="stream-badge">
+                <i class="fa fa-clock-o" style="color: #137dea !important"></i>
+            </div>
+            <div class="stream-panel" style="line-height: 27px;">
+                {{timeFormat(item.clockInTime)}}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">关闭</button>
+</div>

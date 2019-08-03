@@ -1,0 +1,28 @@
+.height-full {
+  height: 100%;
+  padding-right: 0;
+}
+
+.height-scroll {
+  overflow-y: auto;
+}
+
+.height-fullbody {
+  height: calc(100% - 40px);
+}
+
+.btn-radiu button {
+  border-radius: 3px;
+}
+
+.float-right {
+  float: right;
+}
+
+.float-left {
+  float: left;
+}
+
+.no-padding-right {
+  padding-right: 0
+}

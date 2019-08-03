@@ -1,0 +1,49 @@
+<form (ngSubmit)="onSubmit()" [formGroup]="dynamicFormGroup">
+    <div class="modal-header"><h4 class="modal-title pull-left">{{title}}</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()"><span
+                aria-hidden="true">&times;</span></button>
+    </div>
+    <div class="modal-body">
+        <div>
+            <div *ngFor="let attribute of attributes" class="form-row">
+                <div [formGroup]="dynamicFormGroup" class="form-horizontal">
+                    <div class="form-group" [ngSwitch]="attribute.controlType">
+                        <label class="col-lg-2 control-label">{{attribute.label}}</label>
+                        <div class="col-lg-10">
+                            <input *ngSwitchCase="'text'" class="form-control"
+                                   [formControlName]="attribute.attributeKey"
+                                   maxlength="{{attribute?.options?.options?.maxlength}}"
+                                   [id]="attribute.attributeKey" type="text"
+                                   value="{{attribute.defaultValue?attribute.defaultValue:''}}"
+                                   placeholder="请输入{{attribute.label}}">
+                            <input *ngSwitchCase="'password'" class="form-control"
+                                   [formControlName]="attribute.attributeKey"
+                                   [id]="attribute.attributeKey" type="password"
+                                   value="{{attribute.defaultValue?attribute.defaultValue:''}}"
+                                   placeholder="请输入{{attribute.label}}">
+                            <select *ngSwitchCase="'select'" class="form-control"
+                                    [formControlName]="attribute.attributeKey"
+                                    [id]="attribute.attributeKey">
+                                <option *ngFor="let opt of attribute.options?.options"
+                                        [ngValue]="attribute.options?.optionKey? opt[attribute.options?.optionKey]:opt"
+                                        [selected]="selectedOption(opt,attribute)">
+                                    {{opt[attribute.options?.optionLabel]}}
+                                </option>
+                            </select>
+                            <span class="help-block m-b-none text text-warning" *ngIf="!isValid(attribute)">
+                                         *{{attribute.label}}为必填项
+                                    </span>
+                            <span class="help-block m-b-none text text-danger">
+                                         {{ isValidAttributeMark(attribute) }}
+                                    </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">{{closeBtnName}}</button>
+        <button type="submit" class="btn btn-info" [disabled]="!dynamicFormGroup.valid">提交</button>
+    </div>
+</form>

@@ -1,0 +1,164 @@
+<div class="wrapper wrapper-content">
+    <div class="row" id="parRowWraper" style="position: relative;">
+        <div class="col-md-3 height-full" id="treewrap">
+            <div class="panel panel-default height-full">
+                <div class="panel-heading" id="panel-heading">
+                    <div>
+                        部门展示
+                        <span class="label label-primary pull-right">
+                         已选人数: {{userIdList.length}}人
+                        </span>
+                    </div>
+                    <div *ngIf="usertype == 'platform'"
+                         style="margin-top: 10px;width: 100%;display: flex;justify-content: space-between;align-items: center;">
+                        选择物业公司
+                        <select [(ngModel)]='unificationId' style="padding: 0 5px;width: 50%;"
+                                (change)="changeproperty(tree)">
+                            <option *ngFor="let item of propertyArry" value="{{item.unificationId}}">
+                                {{item.unificationName}}
+                            </option>
+                        </select>
+                    </div>
+                    <div *ngIf="usertype == 'platform' || usertype=='property'"
+                         style="margin-top: 10px;width: 100%;display: flex;justify-content: space-between;align-items: center;">
+                        选择项目
+                        <select [(ngModel)]='projectSelectId' style="padding: 0 5px;width: 50%;"
+                                (change)="changeproject(tree)">
+                            <option *ngFor="let item of projectSelect" value="{{item.unificationId}}">
+                                {{item.unificationName}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" (click)="isStatus(tree)"> 是否展示离职人员
+                        </label>
+                    </div>
+                </div>
+                <div class="panel-body height-fullbody height-scroll">
+                    <div class="input-group search-area" style="margin-bottom: 5px;">
+                        <input id="filter" class="form-control" name="filterComment"
+                               [(ngModel)]="filterComment"
+                               #filter (keyup)="tree.treeModel.filterNodes(filter.value)"
+                               placeholder="输入名称搜索"/>
+                        <div class=" input-group-btn">
+                            <button class="btn btn-md btn-primary"
+                                    (click)="tree.treeModel.clearFilter();filterComment= '';">
+                                清空
+                            </button>
+                        </div>
+                    </div>
+                    <tree-root #tree
+                               [nodes]="groupNodes"
+                               [options]="options"
+                               (initialized)="onInitialized(tree,'work')"
+                               (activate)="onEvent($event)">
+                        <ng-template #treeNodeTemplate let-node let-index="index">
+                            <i class='fa fa-home' *ngIf="node.data.nodeType == 'platform'"> </i>
+                            <i class='fa fa-cogs' *ngIf="node.data.nodeType == 'property'"> </i>
+                            <i class='fa fa-cog' *ngIf="node.data.nodeType == 'project'"> </i>
+                            &nbsp;
+                            <span>{{ node.data.name }}</span>
+                            <i class='fa quit' *ngIf="node.data.nodeType == 'user'&&!node.data.nodeInfo.status">离</i>
+                        </ng-template>
+                    </tree-root>
+                </div>
+            </div>
+        </div>
+        <div id="line"
+             style="position:absolute;top:0;left:25%;height:100%;width:15px;overflow:hidden;background:none;cursor:w-resize;z-index: 999"
+             data-placement="top" title="拖动改变宽度"></div>
+        <div class="col-md-9 height-full" id="tableWraper"
+             style="user-select: none;position: absolute;left:calc(25% + 0px);">
+            <div class="panel panel-default height-full">
+                <div class="panel-heading">项目考勤</div>
+                <div style="height: calc(100% - 40px)!important;overflow-y: auto;padding: 15px;">
+                    <div class="row" style="margin-right: 0px;">
+                        <div class="col-sm-2 m-b-xs btn-radiu">
+                            <button type="button" class="btn btn-primary float-left" [disabled]='AllTable.length==0'
+                                    (click)="export()">
+                                <i class="fa fa-plus"></i>&nbsp;导出
+                            </button>
+                        </div>
+                        <div class="col-sm-10 no-padding-right">
+                            <div class="input-group">
+                                <input type="text" placeholder="请选择时间" readonly
+                                       style='background-color: #fff;!important' [bsConfig]="bsConfig"
+                                       class="form-control" [maxDate]='maxDate' [(ngModel)]='month' bsDaterangepicker>
+                                <span class="input-group-btn">
+                                    <button [disabled]='userIdList.length==0' class="btn btn-primary" type="button"
+                                            (click)='search()'>
+                                        <i class="fa fa-search"></i>查询
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="exportableTable">
+                        <table class="table table-bordered  table-striped" border="2">
+                            <thead id='thead'>
+                            <tr>
+                                <th rowspan="2">序号</th>
+                                <th rowspan="2">员工编号</th>
+                                <th rowspan="2">姓名</th>
+                                <th rowspan="2">部门名称</th>
+                                <th colspan="2">出勤天数</th>
+                                <th colspan="2">工作时数</th>
+                                <th rowspan="2">未打卡（次数）</th>
+                                <th colspan="2">迟到</th>
+                                <th colspan="2">早退</th>
+                                <th colspan="2">旷工</th>
+                            </tr>
+                            <tr>
+                                <th>标准</th>
+                                <th>实际</th>
+                                <th>标准</th>
+                                <th>实际</th>
+                                <th>次数</th>
+                                <th>时长</th>
+                                <th>次数</th>
+                                <th>时长</th>
+                                <th>次数</th>
+                                <th>时长</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let item of AllTable,let dx = index">
+                                <td>{{(dx+1)+(pageIndex-1)*perPagNo}}</td>
+                                <td>{{item.userNo}}</td>
+                                <td>{{item.userName}}</td>
+                                <td>{{item.groupNames}}</td>
+                                <td>{{item.standardDay}}</td>
+                                <td>{{item.realDay}}</td>
+                                <td>{{item.standardHour}}</td>
+                                <td>{{item.realHour}}</td>
+                                <td>{{item.missedCount}}</td>
+                                <td>{{item.lateCount}}</td>
+                                <td>{{item.lateHour}}</td>
+                                <td>{{item.earlyCount}}</td>
+                                <td>{{item.earlyHour}}</td>
+                                <td>{{item.absent}}</td>
+                                <td>{{item.absentHour}}</td>
+                            </tr>
+                            <tr *ngIf="!AllTable || AllTable.length==0">
+                                <td colspan="100%" class="text-center">没有记录!</td>
+                            </tr>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th colspan="100%">
+                                    <atnd-dynamic-pagination [perPageNo]="perPagNo" [total]="total"
+                                                             (onChanged)="onPaginationChanged($event)">
+                                    </atnd-dynamic-pagination>
+                                </th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="exportableTableToIE" style="display: none;"></div>
+    <atnd-excel-print [printData]="printData"></atnd-excel-print>
+</div>

@@ -1,0 +1,23 @@
+# Build Files #
+/output/
+/dist/
+
+# IDE Files #
+.idea/*
+*.iml
+
+# Third-part Files #
+**/node_modules/*
+**/bower_components/*
+**/src/vendors/*
+
+# Temp and Log Files #
+tmp/*
+*.log
+/bin/
+/build/
+
+/target/
+/bower_components/
+/node_modules/
+.DS_Store

@@ -1,0 +1,55 @@
+<div class="row" style="margin-right: 0px;">
+    <div class="col-sm-6 m-b-xs btn-radiu">
+        <button *ngIf="isAdmin" hide-node type="button" class="btn btn-warning float-left"
+                [disabled]="userId==''||userId==undefined" (click)="openModal()">
+            <i class="fa fa-pencil-square-o"></i>&nbsp;授权
+        </button>
+    </div>
+    <!--   <div class="col-sm-6 m-b-xs no-padding-right">
+        <div class="input-group">
+            <input  [(ngModel)]='keyword' class="form-control ng-untouched ng-pristine ng-valid" placeholder="搜索" type="text" ng-reflect-model="" (keyup)="enterSearch($event)">
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="button" (click)='search()'>
+                    <i class="fa fa-search"></i>搜索
+                </button>
+            </span>
+        </div>
+    </div> -->
+</div>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>序号</th>
+        <th>模块串码</th>
+        <th>模块型号</th>
+        <th>模块描述</th>
+        <th>厂商</th>
+        <th>其他硬件参数</th>
+        <th>状态</th>
+        <th>备注</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of userTable,let dx = index">
+        <td>{{(dx+1)+(pageIndex-1)*perPagNo}}</td>
+        <td>{{item.deviceModule.sn}}</td>
+        <td>{{item.deviceModule.model}}</td>
+        <td>{{item.deviceModule.description}}</td>
+        <td>{{item.deviceModule.manufacturer}}</td>
+        <td>{{item.deviceModule.other}}</td>
+        <td [innerHTML]="formatter(item.deviceModule.status)"><!-- {{item.deviceModule.statusLabel}} --></td>
+        <td>{{item.deviceModule.remark}}</td>
+    </tr>
+    <tr *ngIf="!userTable || userTable.length==0">
+        <td colspan="100%" class="text-center">没有记录!</td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+        <th colspan="100%">
+            <atnd-dynamic-pagination [perPageNo]="perPagNo" [total]="total" (onChanged)="onPaginationChanged($event)">
+            </atnd-dynamic-pagination>
+        </th>
+    </tr>
+    </tfoot>
+</table>

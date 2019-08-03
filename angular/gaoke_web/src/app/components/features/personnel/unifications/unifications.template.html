@@ -1,0 +1,13 @@
+<div class="wrapper wrapper-content">
+    <div class="row  white-bg">
+        <atnd-dynamic-table
+                [checkBox]="false"
+                [columns]="columns"
+                [perPageNo]="50"
+                [tableOption]="tableOption"
+                [queryParam]="queryParam"
+                (singleCallback)="singleCallback($event)"
+                [commonTableService]="unificationsService">
+        </atnd-dynamic-table>
+    </div>
+</div>

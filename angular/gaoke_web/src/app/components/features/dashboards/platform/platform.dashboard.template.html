@@ -1,0 +1,42 @@
+<div class="row" style="height: 100%">
+    <div class=" col-lg-12" style="height: 100%">
+        <div class="panel panel-default" style="height: 100%">
+            <div class="panel-heading">
+                平台设备监控
+                <div class="stat-percent font-bold"
+                     (click)="doQuery(period?.key)"
+                     *ngFor="let period of periods;"
+                     [ngClass]="{'text-success':queryPeriod === period?.key}"
+                     style="padding-left: 10px;cursor: pointer;">
+                    <i class="fa" [ngClass]="{'fa-history':!period?.current,'fa-clock-o':period?.current}"></i>
+                    &nbsp;{{period?.name}}
+                </div>
+            </div>
+            <div class="panel-body" style="height: 400px;">
+                <div class="col-lg-6" style="height: 400px;">
+                    <atnd-dashboard-platform-common-pie
+                            [dashboardData]="dashboardPieData"
+                            [duration] = "queryPeriod"
+                    >
+                    </atnd-dashboard-platform-common-pie>
+                </div>
+                <div class="col-lg-6">
+                    <div class="col-lg-6 peity-span animated flipInX peity-saturation-div text-center"
+                         style="cursor: pointer;margin-bottom: 10px;" (click)="goDetails(peity)"
+                         *ngFor="let peity of peitys;">
+                            <span
+                                    peity
+                                    [type]="'pie'"
+                                    [options]="options"
+                                    [peitySaturation]="peity.value"
+                            ></span>
+                        <h3 class="m-xs text-center">{{peity.name}}</h3>
+                        <h4 class="font-bold no-margins text-center">
+                            {{peity.value}}
+                        </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body{
+      background: #eee;
+    }
+    ul{
+      width:300px;
+      background: #fff;
+      border-radius: 2%;
+      padding: 15px;
+      color: darkgray;
+    }
+    li {
+      font-size: 16px;
+      width:100%;
+      display: flex;
+      justify-content: space-around;
+      padding: 3px;
+    }
+    .brefore{
+      width:70px;
+      text-align:justify;
+      line-height: 20px;
+      height: 20px;
+      vertical-align: top;
+      margin-right: 20px;
+    }
+    .after {
+      text-align: left;
+      width:calc(100% - 70px);
+    }
+    i {
+      display: inline-block;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <ul>
+    <li><div class="brefore">交易状态<i></i></div><div class="after">支付成功,用户已付款</div></li>
+    <li><div class="brefore">支付方式<i></i></div><div class="after">微信支付</div></li>
+    <li><div class="brefore">支付金额<i></i></div><div class="after">50.00</div></li>
+    <li><div class="brefore">商家<i></i></div><div class="after">XX省电子科技有限公司</div></li>
+    <li><div class="brefore">交易时间<i></i></div><div class="after">2019-08-01 12：30</div></li>
+  </ul>
+</body>
+</html>

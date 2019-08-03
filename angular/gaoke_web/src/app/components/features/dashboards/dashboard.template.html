@@ -1,0 +1,67 @@
+<div id="ibox2" style="z-index: 200;width: 100%;height: 100%;" *ngIf="showLoading">
+    <div class="sk-spinner sk-spinner-double-bounce" style="margin: auto;">
+        <div class="sk-double-bounce1"></div>
+        <div class="sk-double-bounce2"></div>
+    </div>
+    <h1 class="text-center">获取数据中.....</h1>
+</div>
+<div class="wrapper wrapper-content" *ngIf="!showLoading">
+      <div class="row" style="background-color: #cccccc1a;padding: 20px 0;">
+         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div class="carousel-tile carousel vertical slide">
+                <div class="carousel-inner" style="background: #4b93e3 ;border-radius: 5px;">
+                    <div class="item active">
+                     <div class="tile" style=""> 
+                         <div class="titleImg" style="">
+                             <img alt="image" class="img-circle img-md"
+                             *ngIf="!loginUser?.unificationFaIcon"
+                             src="assets/images/{{loginUser?.unificationType ? loginUser?.unificationType+'.png' : 'profile_small.jpg'}}">
+                             <img alt="image" class="img-circle img-md"
+                             *ngIf="loginUser?.unificationFaIcon"
+                             [src]="'data:image/jpg;base64,' + loginUser?.unificationFaIcon">
+                         </div>
+                         <div class="titleText" style="height:62px;font-weight: 100;font-size: 25px;color: #fff;line-height: 62px;">{{loginUser.groupNames}}</div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div class="carousel-tile carousel vertical slide">
+                <div class="carousel-inner" style="background: #4b93e3;border-radius: 5px;"> 
+                    <div class="item active">
+                        <div class="tile" style=""> 
+                            <div class="titleImg" style="">
+                                <i class="fa fa-calendar" style="font-size:40px;color:#fff;"></i>
+                            </div>
+                            <div class="titleText" style="color:#fff;">{{date}}<br>{{weeekShow()}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div class="carousel-tile carousel vertical slide">
+                <div class="carousel-inner" style="background: #4b93e3;border-radius: 5px;">
+                    <div class="item active">
+                        <div class="tile" style=""> 
+                           <div class="titleImg" style="">
+                            <i class="fa fa-clock-o" style="font-size:50px;color:#fff;"></i>
+                        </div>
+                        <div class="titleText" style="font-size:45px;color:#fff;">{{time}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="dashboardType === 'platform'" style="height: 100%;">
+        <atnd-dashboard-platform [initDashboardData]="initDashboardData"></atnd-dashboard-platform>
+    </div>
+    <div *ngIf="dashboardType === 'property'" style="height: 100%;">
+        <atnd-dashboard-property [initDashboardData]="initDashboardData"></atnd-dashboard-property>
+    </div>
+    <div *ngIf="dashboardType === 'project'" style="height: 100%;">
+        <atnd-dashboard-project [initDashboardData]="initDashboardData"></atnd-dashboard-project>
+    </div>
+</div>

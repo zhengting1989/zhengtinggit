@@ -1,0 +1,95 @@
+<div class="wrapper wrapper-content">
+    <div class="row" id="parRowWraper" style="position: relative;">
+        <div class="col-md-12 height-full" id="tableWraper"
+             style="user-select: none;position: absolute;left:calc(0% + 0px);padding-left: 0;">
+            <div class="panel panel-default height-full">
+                <div class="panel-heading">升级管理</div>
+                <div class="panel-body height-fullbody height-scroll">
+                    <div class="row" style="margin-right: 0px;">
+                        <div class="col-sm-6 m-b-xs btn-radiu">
+                            <button hide-node type="button" class="btn btn-primary float-left"
+                                    (click)="openModal('新增')">
+                                <i class="fa fa-plus"></i>&nbsp;新增
+                            </button>
+                            <button hide-node type="button" class="btn btn-warning float-left" data-placement="top"
+                                    title="只允许单条修改" [disabled]='this.deleteList.length!=1'
+                                    (click)="openModal('修改')">
+                                <i class="fa fa-pencil-square-o"></i>&nbsp;修改
+                            </button>
+                            <button hide-node type="button" class="btn btn-danger float-left"
+                                    [disabled]='this.deleteList.length==0' (click)='deleleItem()'>
+                                <i class="fa fa-trash-o"></i>&nbsp;删除
+                            </button>
+                        </div>
+                        <div class="col-sm-6 m-b-xs no-padding-right">
+                            <div class="input-group">
+                                <input [(ngModel)]='keyword' class="form-control ng-untouched ng-pristine ng-valid"
+                                       placeholder="请按照关键字(软件名称/软件版本/更新说明)进行搜索" type="text" ng-reflect-model=""
+                                       (keyup)="enterSearch($event)">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" (click)='search()'>
+                                        <i class="fa fa-search"></i>搜索
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered  table-striped">
+                        <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" name="" id="allcheck" [(checked)]='checkFlag'
+                                       (click)="allchecked($event)">
+                            </th>
+                            <th>序号</th>
+                            <th>软件名称</th>
+                            <th>软件版本</th>
+                            <th>build版本</th>
+                            <th>是否强制更新</th>
+                            <th>下载地址</th>
+                            <th>更新说明</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of upgradeList,let dx = index">
+                            <div id="copy{{dx}}" style="display: none;">{{item.url}}</div>
+                            <td>
+                                <input type="checkbox" id="allcheck{{dx}}" name="check" [(checked)]='checkFlag'
+                                       (click)="update($event,dx)">
+                            </td>
+                            <td>{{(dx+1)+(pageIndex-1)*perPagNo}}</td>
+                            <td>{{item.deviceSoftware.name}}</td>
+                            <td>{{item.version}}</td>
+                            <td>{{item.build}}</td>
+                            <td>{{item.force ? '是' : '否'}}</td>
+                            <td class="flex">
+                                <button type="button" class="btn btn-info btn-sm" (click)="download(item)">
+                                    <i class="fa fa-cloud-download"></i>&nbsp;下载
+                                </button>
+                                <button type="button" class="btn btn-success btn-sm" (click)="copy(dx)">
+                                    <i class="fa fa-copy"></i>&nbsp;拷贝下载链接
+                                </button>
+                            </td>
+                            <td data-toggle="tooltip" title="{{item.remark}}"><span class="overflow">{{item.remark}}</span></td>
+                        </tr>
+                        <tr *ngIf="!upgradeList || upgradeList.length==0">
+                            <td colspan="100%" class="text-center">没有记录!</td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th colspan="100%">
+                                <atnd-dynamic-pagination [perPageNo]="perPagNo" [total]="total"
+                                                         (onChanged)="onPaginationChanged($event)">
+                                </atnd-dynamic-pagination>
+                            </th>
+                        </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

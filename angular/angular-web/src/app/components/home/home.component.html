@@ -1,0 +1,185 @@
+<div>
+    <h2>同步方法中获取异步请求方法的数据</h2>
+    <h4>方法1：回调函数</h4>
+    <div class="btn-text">
+        <button (click)="getcallback()">获取回调数据</button>
+        <textarea name="" id="" cols="30" rows="10" >{{callbackData | json }}</textarea>
+        <textarea name="" id="" cols="100" rows="10" >
+            异步请求
+            getCallBackData(callback){
+                setTimeout(()=>{
+                  var list = [
+                    {method:'callback'},
+                    {name:'lixing'},
+                    {age:20}
+                  ]
+                  callback(list)
+                },3000)
+            }
+            调用请求
+            getcallback(){
+                this.httpService.getCallBackData(res=>{
+                  console.log(res)
+                  this.callbackData = res;
+                })
+            }
+            </textarea>
+    </div>
+
+    <h4>方法2：promise</h4>
+    <div class="btn-text">
+        <button (click)="getPromise()">获取promise数据</button>
+        <textarea name="" id="" cols="30" rows="10" >{{promiseData | json }}</textarea>
+        <textarea name="" id="" cols="100" rows="10" >
+                异步请求
+                getPromiseData(){
+                    return new Promise((resolve,reject)=>{
+                      setTimeout(()=>{
+                        var list = [
+                          {method:'Promise'},
+                          {name:'lixing'},
+                          {age:20}
+                        ]
+                        resolve(list)
+                      },3000)
+                    })
+                }
+                调用请求
+                getPromise(){
+                    this.httpService.getPromiseData().then(res=>{
+                      this.promiseData = res;
+                    })
+                }
+        </textarea>
+    </div>
+    <h4>方法3：rxjs第三方库</h4>
+    <h5>获取rxjs原始数据</h5>
+    <div class="btn-text">
+        <button (click)="getRxjs()">获取rxjs数据</button>
+        <textarea name="" id="" cols="30" rows="10" >{{rxjsData | json }}</textarea>
+        <textarea name="" id="" cols="100" rows="10" >
+                异步请求
+                import { Observable } from 'rxjs'
+                getRxjsData(){
+                    return new Observable(observer=>{
+                      setTimeout(()=>{
+                        var list = [
+                          {method:'rxjs'},
+                          {name:'lixing'},
+                          {age:20}
+                        ]
+                        observer.next(list)
+                      },3000)
+                    })
+                }
+                调用请求
+                getRxjs(){
+                    this.httpService.getRxjsData().subscribe(res=>{
+                      this.rxjsData = res;
+                    })
+                }
+        </textarea>
+    </div>
+    <h5>获取rxj filter原始数据</h5>
+    <div class="btn-text">
+        <button (click)="getFilterRxjs()">获取rxjs filter数据</button>
+        <textarea name="" id="" cols="30" rows="10" >{{filteRxjsData | json }}</textarea>
+        <textarea name="" id="" cols="100" rows="10" >
+                调用请求
+                import { filter, map} from 'rxjs/operators'
+                getFilterRxjs(){
+                    this.httpService.getRxjsData()
+                    .pipe(
+                      filter(value=>{
+                        value.forEach(element => {
+                          if(element['method']){
+                            element['method'] = element['method']+" filter"
+                          }
+                         });
+                        return value
+                      })
+                    )
+                    .subscribe(res=>{
+                      this.filteRxjsData = res;
+                    })
+                }
+        </textarea>
+    </div>
+    <h5>获取rxjs map数据</h5>
+    <div class="btn-text">
+        <button (click)="getMapRxjs()">获取rxjs map数据</button>
+        <textarea name="" id="" cols="30" rows="10" >{{mapRxjsData | json }}</textarea>
+        <textarea name="" id="" cols="100" rows="10" >
+                调用请求
+                import { filter, map} from 'rxjs/operators'
+                getMapRxjs(){
+                    this.httpService.getRxjsData()
+                    .pipe(
+                      map(val => {
+                        val.forEach(element => {
+                         element['pipe'] = "map"
+                        });
+                        return val;
+                      })
+                    )
+                    .subscribe(res=>{
+                      this.mapRxjsData = res;
+                    })
+                }
+        </textarea>
+    </div>
+    <h4>promise与rxjs区别</h4>
+    <table border="1" style="border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>不同点</th>
+                <th>promise</th>
+                <th>rxjs</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of promiseRxjsDiffrentData;let key=index">
+                <td style="text-align: center">{{key+1}}</td>
+                <td>{{item.diff}}</td>
+                <td>{{item.promise}}</td>
+                <td>{{item.rxjs}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <h4>rxjs 数据实时推送（promise与rxjs区别--不同点7）</h4>
+    <div class="btn-text">
+        <button (click)="getRxjsPush()">获取rxjs map数据</button>
+        <textarea name="" id="" cols="30" rows="10" >{{pushRxjsData | json }}</textarea>
+        <textarea name="" id="" cols="100" rows="10" >
+                异步请求
+                import { Observable } from 'rxjs'
+                getRxjsPushData(){
+                    return new Observable(observer=>{
+                      var count = 0
+                      setInterval(()=>{
+                        count++;
+                        var list = [
+                          {method:'rxjs---'+count},
+                          {name:'lixing'},
+                          {age:20}
+                        ]
+                        observer.next(list)
+                      },3000)
+                    })
+                  }
+                调用请求
+                getRxjsPush(){
+                    this.httpService.getRxjsPushData().subscribe(res=>{
+                      this.pushRxjsData = res
+                    })
+                }
+        </textarea>
+    </div>
+</div>
+<br>
+<br>
+
+
+
+

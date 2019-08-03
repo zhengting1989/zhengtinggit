@@ -1,0 +1,62 @@
+def getTS() {
+    def fe = fileExists 'timestamp'
+    if (!fe) {
+        sh "date +'%Y%m%d%H%M%S' > timestamp"
+    }
+    return readFile('timestamp').trim()
+}
+
+def removeTSFile() {
+    def fe = fileExists 'timestamp'
+    if ( fe ) {
+        sh 'rm -f timestamp'
+    }
+}
+
+def getVersion(projectName) {
+    def settings = readJSON file: "./version.json"
+
+    if (env.BRANCH_NAME == 'release') {
+        return settings.major_version + '.' + settings.minor_version + '.' + env.BUILD_NUMBER
+    } else {
+        return settings.major_version + '.' + settings.minor_version + '.0'
+    }
+}
+
+def build(projectName) {
+    def version = getVersion(projectName)
+    def ts = getTS()
+
+    if (env.BRANCH_NAME == 'release') {
+        sh "./build.sh release -B -P -n -p ${projectName} -v ${version} -s 'release'"
+    } else {
+        sh "./build.sh release -B -P -n -p ${projectName} -v ${version} -t ${ts}"
+    }
+}
+
+stage('Start') {
+    node {
+        slackSend (color: '#00FFFF', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+    }
+}
+
+stage('Prepare') {
+    node {
+        try {
+            checkout scm
+        } catch (Exception ex) {
+            slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
+    }
+}
+
+stage('Build') {
+    node {
+        try {
+            build('hileveps-web')
+            slackSend (color: '#00EC00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]': Product 'hileveps-web' (${env.BUILD_URL})")
+        } catch (Exception ex) {
+            slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]': Product 'hileveps-web' (${env.BUILD_URL})")
+        }
+    }
+}

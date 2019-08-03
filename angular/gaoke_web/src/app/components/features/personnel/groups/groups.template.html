@@ -1,0 +1,90 @@
+<div class="wrapper wrapper-content">
+    <div class="row" id="parRowWraper" style="position: relative;">
+        <div class="col-md-4 height-full" id="treewrap">
+            <div class="panel panel-default height-full">
+                <div class="panel-heading" id="panel-heading">
+                    <div><strong>部门展示</strong></div>
+                    <div style="display: flex;align-items: center;justify-content: space-between;">
+                        <button  class="btn btn-white btn-sm" type="button" (click)='isCollapse(tree)'>    <i class='fa fa-folder-o' *ngIf="!iscollFlag"></i>
+                            <i class='fa fa-folder-open-o' *ngIf="iscollFlag"></i>
+                        {{iscollapse}}</button>  
+                        <button class="btn btn-white btn-sm" (click)="toEdit(tree)">
+                            <i class="fa fa-edit"></i> 添加/修改/详情
+                        </button>
+                        <button class="btn btn-warning btn-sm"
+                                hide-node
+                                [disabled]="nodeModel?.readonly"
+                                (click)="toDelete(tree)">
+                            <i class="fa fa-trash-o"></i> 删除
+                        </button>
+                    </div>
+                    <div class="checkbox" *ngIf="unificationType === 'property'" style="margin:0;">
+                        <label>
+                            <input type="checkbox" #childCheckBox
+                           id="childCheckBox" *ngIf="unificationType === 'property'"
+                           (change)="onChangeAllCheckBox(childCheckBox.checked,tree)"> 显示下属项目
+                        </label>
+                    </div>
+                </div>
+                <div class="panel-body height-fullbody height-scroll">
+                    <div class="input-group search-area" style="margin-bottom: 5px;">
+                        <input id="filter" class="form-control" name="filterComment"
+                               [(ngModel)]="filterComment"
+                               #filter (keyup)="tree.treeModel.filterNodes(filter.value)"
+                               placeholder="输入名称搜索"/>
+                        <div class=" input-group-btn">
+                            <button class="btn btn-md btn-primary"
+                                    (click)="tree.treeModel.clearFilter();filterComment= '';">
+                                清空
+                            </button>
+                        </div>
+                    </div>
+                    <tree-root #tree
+                               [nodes]="groupNodes"
+                               [options]="options"
+                               (initialized)="onInitialized(tree)"
+                               (activate)="onEvent($event)">
+                        <ng-template #treeNodeTemplate let-node let-index="index">
+                            <i class='fa fa-home' *ngIf="node.data.nodeType == 'platform'"> </i>
+                            <i class='fa fa-cogs' *ngIf="node.data.nodeType == 'property'"> </i>
+                            <i class='fa fa-cog' *ngIf="node.data.nodeType == 'project'"> </i>
+                            &nbsp;
+                            <span>{{ node.data.name }}</span>
+                        </ng-template>
+                    </tree-root>
+                </div>
+            </div>
+        </div>
+        <div id="line"
+             style="position:absolute;top:0;left:33.3%;height:100%;width:15px;overflow:hidden;background:none;cursor:w-resize;z-index: 999"
+             data-placement="top" title="拖动改变宽度"></div>
+        <div class="col-md-8 height-full" id="tableWraper"
+             style="user-select: none;position: absolute;left:calc(33.3% + 0px);">
+            <div class="panel panel-default height-full">
+                <div class="panel-heading">
+                    当前选择 :
+                    <span class="label label-primary ">
+                      {{showNodeType()}} : {{nodeModel?.name}}
+                    </span>
+                </div>
+                <div class="panel-body height-fullbody height-scroll">
+                    <tabset #groupTabSets>
+                        <tab heading="人员管理" id="group-user-tab">
+                            <atnd-groups-user [nodeModel]="nodeModel"
+                                              [changeDate]="changeGroupUserDate"
+                                              (userChange)="crossDomainUserChange($event,false)"></atnd-groups-user>
+                        </tab>
+                        <tab heading="菜单权限管理" id="group-menu-tab">
+                            <atnd-groups-menu [nodeModel]="nodeModel"></atnd-groups-menu>
+                        </tab>
+                        <tab heading="跨组织管理" id="user-cross-domain-tab" *ngIf="showCrossDomainTab()">
+                            <atnd-groups-cross-domain [nodeModel]="nodeModel"
+                                                      [changeDate]="changeCrossDomainDate"
+                                                      (userChange)="crossDomainUserChange($event,true)"></atnd-groups-cross-domain>
+                        </tab>
+                    </tabset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

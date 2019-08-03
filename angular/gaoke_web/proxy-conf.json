@@ -1,0 +1,9 @@
+{
+  "/": {
+    "target": "http://localdev.manage.hileveps.net",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  }
+}

@@ -1,0 +1,23 @@
+<!-- Wrapper-->
+<div id="wrapper" *ngIf="getMenus">
+
+    <!-- Left navigation bar -->
+    <atnd-navigation></atnd-navigation>
+
+    <!-- Main page wrapper -->
+    <div id="page-wrapper" class="gray-bg">
+
+        <!-- Top navigation -->
+        <atnd-topnavbar></atnd-topnavbar>
+
+        <!-- Main view/routes wrapper-->
+        <router-outlet></router-outlet>
+
+        <!-- Footer -->
+        <atnd-footer></atnd-footer>
+
+    </div>
+    <!-- End page wrapper-->
+
+</div>
+<!-- End wrapper-->

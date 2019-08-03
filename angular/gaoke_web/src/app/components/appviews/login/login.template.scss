@@ -1,0 +1,52 @@
+.loginPage{
+    width: 100%; 
+	height: 100%; 
+	overflow: hidden;
+	background-image: radial-gradient(ellipse at 50% 50%, #0062cc 10%, #22284B 88%);
+
+	.logo{
+		margin-top: 55px; 
+	}
+
+	.middle-box, .logo img{
+		width: 300px;
+	}
+
+	.loginTitle{
+		color: #fff;
+	}
+	input{
+		outline: none;
+	}
+	button{
+	    background-color: #0580ff;
+		border-color: #0580ff;
+	}
+	.copy{
+		color: #fff;
+	}
+	.forget{
+		color: rgba(255,255,255,0.9)
+	}
+}
+
+.form-control:focus, .single-line:focus{
+	border-color: #137dea!important;
+}
+.contactWrap {
+	.contact-box {
+		height: 205px;
+	}
+	.font-bold {
+		font-weight: 600;
+		width: 100%;
+		height: 36px;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		overflow: hidden;
+		/* 强制数字字母换行 */
+		word-break: break-all;
+		word-wrap: break-word;
+	}
+}

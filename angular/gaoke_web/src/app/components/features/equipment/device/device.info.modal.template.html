@@ -1,0 +1,73 @@
+<div class="modal-header">
+    <h4 class="modal-title pull-left">设备安装信息</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body" style="padding-bottom: 10px;overflow-y: auto;" id="modal-body">
+    <div class="row">
+        <div class="col-sm-12 m-b-xs no-padding-right">
+            <div class="input-group">
+                <input [(ngModel)]='keyword' class="form-control" placeholder="请按照关键字(安装地址/设备串码)进行搜索" type="text" (keyup)="enterSearch($event)">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button" (click)='search("btn")'>
+                        <i class="fa fa-search"></i>搜索
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>所属物业/项目</th>
+                <th>安装地址</th>
+                <th>设备串码</th>
+                <th>设备类型</th>
+                <th>模块型号</th>
+                <th>模块串码</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let item of deviceTable;let dx = index;">
+                <ng-container *ngFor="let model of item.deviceModules;let k = index;">
+                    <tr *ngIf='item.deviceModules.length>0'> 
+                        <td  class="tdcenter" [attr.rowspan]="item.deviceModules.length" *ngIf="k == 0">{{(dx+1)+(pageIndex-1)*perPagNo}}</td>
+                        <td  class="tdcenter" [attr.rowspan]="item.deviceModules.length" *ngIf="k == 0">{{item.unificationName}}</td>
+                        <td  class="tdcenter" [attr.rowspan]="item.deviceModules.length" *ngIf="k == 0">{{item.location}}</td>
+                        <td  class="tdcenter" [attr.rowspan]="item.deviceModules.length" *ngIf="k == 0">{{item.sn}}</td>
+                        <td  class="tdcenter" [attr.rowspan]="item.deviceModules.length" *ngIf="k == 0">{{item.typeName}}</td>
+                        <td>{{model.model}}</td>
+                        <td>{{model.sn}}</td>
+                    </tr>
+                </ng-container>
+                <tr *ngIf='item.deviceModules.length==0'>
+                    <td class="tdcenter" >{{(dx+1)+(pageIndex-1)*perPagNo}}</td>
+                    <td>{{item.unificationName}}</td>
+                    <td>{{item.location}}</td>
+                    <td>{{item.sn}}</td>
+                    <td>{{item.typeName}}</td>
+                    <td>无</td>
+                    <td>无</td>
+                </tr>
+            </ng-container>
+
+            <tr *ngIf="!deviceTable || deviceTable.length==0">
+                <td colspan="100%" class="text-center">没有记录!</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="100%">
+                    <atnd-dynamic-pagination [perPageNo]="perPagNo" [total]="total" (onChanged)="onPaginationChanged($event)">
+                    </atnd-dynamic-pagination>
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">关闭</button>
+</div>

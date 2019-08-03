@@ -1,0 +1,13 @@
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	root /var/www/node_modules/hilevepsweb/;
+	index index.html;
+	server_name _;
+
+	location / {
+		add_header Cache-Control no-cache;
+		try_files $uri $uri/ =404;
+	}
+}

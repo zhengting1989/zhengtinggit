@@ -1,0 +1,93 @@
+<div class="row" style="margin-bottom: 5px;margin-right: 0px;">
+    <div class="col-sm-6 m-b-xs btn-radiu">
+        <button hide-node type="button" class="btn btn-primary float-left" [disabled]="unificationId==undefined"
+                *ngIf="showDeleteAndHq&&isAdmin" (click)="openModal('新增')">
+            <i class="fa fa-plus"></i>&nbsp;新增
+        </button>
+        <button hide-node type="button" class="btn btn-primary float-left" [disabled]="unificationId==undefined"
+                *ngIf="!showDeleteAndHq&&isAdmin" (click)="openModal('安装')">
+            <i class="fa fa-plus"></i>&nbsp;安装
+        </button>
+        <button hide-node type="button" class="btn btn-warning float-left" *ngIf="updateArray.length==1&&isAdmin"
+                [disabled]='updateArray.length!=1&&isAdmin' (click)="openModal('修改')">
+            <i class="fa fa-pencil-square-o"></i>&nbsp;修改
+        </button>
+        <button hide-node type="button" class="btn btn-warning float-left" *ngIf="updateArray.length!=1&&isAdmin"
+                [disabled]='updateArray.length<=1' (click)="openModal('批量修改')">
+            <i class="fa fa-pencil-square-o"></i>&nbsp;修改
+        </button>
+        <button hide-node type="button" class="btn btn-danger float-left" [disabled]='updateArray.length==0'
+                *ngIf="showDeleteAndHq&&isAdmin" (click)='toDeletes()'>
+            <i class="fa fa-trash-o"></i>&nbsp;删除
+        </button>
+        <button hide-node type="button" class="btn btn-info float-left" 
+        *ngIf="isAdmin" (click)='openDeviceInfo()'>
+            设备信息
+        </button>
+    </div>
+    <div class="col-sm-6 m-b-xs no-padding-right">
+        <div class="input-group">
+            <input [(ngModel)]='keyword' class="form-control ng-untouched ng-pristine ng-valid"
+                   placeholder="请按照关键字(串码/类型/型号/cpu/内存/硬盘)进行搜索" type="text" (keyup)="enterSearch($event)">
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="button" [disabled]="unificationId==undefined" (click)='search()'>
+                    <i class="fa fa-search"></i>搜索
+                </button>
+            </span>
+        </div>
+    </div>
+
+</div>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th hide-node *ngIf="isAdmin">
+            <input type="checkbox" name="" id="allcheck" [(checked)]='checkFlag' (click)="allchecked($event)">
+        </th>
+        <th>序号</th>
+        <th *ngIf="!showDeleteAndHq">安装地址</th>
+        <th>设备串码</th>
+        <th>类型</th>
+        <th>设备型号</th>
+        <th>CPU</th>
+        <th>内存</th>
+        <th>硬盘信息</th>
+        <th>其他硬件参数</th>
+        <th>设备状态</th>
+        <th>激活状态</th>
+        <th>日志</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of deviceTable;let dx = index;">
+        <td hide-node *ngIf="isAdmin">
+            <input type="checkbox" [(checked)]='checkFlag' id="allcheck{{dx}}" (click)="update($event,dx)">
+        </td>
+        <td>{{(dx+1)+(pageIndex-1)*perPagNo}}</td>
+        <td *ngIf="!showDeleteAndHq">{{item.location}}</td>
+        <td>{{item.sn}}</td>
+        <td>{{item.typeName}}</td>
+        <td>{{item.model}}</td>
+        <td>{{item.cpu}}</td>
+        <td>{{item.memory}}</td>
+        <td>{{item.disk}}</td>
+        <td>{{item.other}}</td>
+        <td>{{item.statusLabel}}</td>
+        <td [innerHTML]="formatter(item.activated)"></td>
+        <td (click)="openLogModal(item)" class="text-center" style="cursor: pointer;">
+            <i class="fa fa-history"></i>
+        </td>
+    </tr>
+    <tr *ngIf="!deviceTable || deviceTable.length==0">
+        <td colspan="100%" class="text-center">没有记录!</td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+        <th colspan="100%">
+            <atnd-dynamic-pagination [perPageNo]="perPagNo" [total]="total" (onChanged)="onPaginationChanged($event)">
+            </atnd-dynamic-pagination>
+        </th>
+    </tr>
+    </tfoot>
+</table>

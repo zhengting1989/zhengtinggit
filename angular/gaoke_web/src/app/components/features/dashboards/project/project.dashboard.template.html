@@ -1,0 +1,65 @@
+<div class="row">
+    <div class="col-lg-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                项目考勤数据合计
+            </div>
+            <div class="panel-body" style="height: 400px;">
+                <ngx-charts-advanced-pie-chart
+                        [results]="single"
+                        [label]="label"
+                        [scheme]="colorScheme"
+                        (select)="onSelect($event)"
+                        [percentageFormatting]="percentageFormatting">
+                </ngx-charts-advanced-pie-chart>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                {{loginUser.parentUnificationName}}-{{loginUser.unificationName}}&nbsp;共有员工&nbsp;{{userSum}}&nbsp;人,{{event?.name?event.name:clickTypeName}}<span *ngIf="event?.name === '正常'">打卡</span>&nbsp;{{event?.value?event.value:clickTimes.length}}&nbsp;人
+
+            </div>
+            <div class="panel-body" style="height: 380px; overflow-y: auto;">
+                <table class="table table-bordered" *ngIf="clickTimes?.length != 0">
+                    <tr>
+                        <th>序号</th>
+                        <th>姓名</th>
+                        <th>部门</th>
+                        <th *ngIf="clickType == 'clock' || clickType == 'frown'">第一次打卡时间</th>
+                        <th *ngIf="clickType == 'clock' || clickType == 'bullhorn'">最后一次打卡时间</th>
+                        <th *ngIf="clickType == 'frown'">迟到时长</th>
+                        <th *ngIf="clickType == 'bullhorn'">早退时长</th>
+                    </tr>
+                    <tr *ngFor="let item of clickTimes;let idx = index;">
+                        <td>{{idx + 1}}</td>
+                        <td>{{item.userName}}</td>
+                        <td>{{item.groupNames}}</td>
+                        <td *ngIf="clickType == 'clock' || clickType == 'frown'">{{timeFormat(item.firstTime)}}</td>
+                        <td *ngIf="clickType == 'clock' || clickType == 'bullhorn'">{{timeFormat(item.lastTime)}}</td>
+                        <td *ngIf="clickType == 'frown'">{{item.lateHour}}</td>
+                        <td *ngIf="clickType == 'bullhorn'">{{item.earlyHour}}</td>
+                    </tr>
+                </table>
+                <div class="row" *ngIf="clickTimes?.length == 0">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-6 text-center widget lazur-bg p-xl animated wobble"
+                         style="border-radius: 15px / 20px!important;">
+                        <ul class="list-unstyled m-t-md">
+                            <li>
+                                <span class="fa"
+                                      [ngClass]="{'fa-clock-o':clickType == 'clock',
+                                       'fa-frown-o':clickType == 'frown',
+                                       'fa-bell':clickType == 'bell',
+                                       'fa-bullhorn':clickType == 'bullhorn'}"></span>
+                                <label>没有记录</label>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

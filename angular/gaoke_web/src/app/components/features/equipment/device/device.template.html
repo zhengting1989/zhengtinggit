@@ -1,0 +1,79 @@
+<div class="wrapper wrapper-content">
+    <div class="row" id="parRowWraper" style="position: relative;" [ngStyle]="{'display':showtree ? 'block' : 'none'}">
+        <div class="col-md-3 height-full" id="treewrap">
+            <div class="panel panel-default height-full">
+                <div class="panel-heading" style="display: flex;align-items: center;justify-content: space-between;">
+                    <strong>部门展示</strong>
+                    <button class="btn btn-white btn-xs" type="button" (click)='isCollapse(tree)'>
+                        <i class='fa fa-folder-o' *ngIf="!iscollFlag"></i>
+                        <i class='fa fa-folder-open-o' *ngIf="iscollFlag"></i>
+                        {{iscollapse}}
+                    </button>
+                </div>
+                <div class="panel-body height-fullbody height-scroll">
+                    <div class="input-group search-area" style="margin-bottom: 5px;">
+                        <input id="filter" class="form-control" name="filterComment"
+                               [(ngModel)]="filterComment"
+                               #filter (keyup)="tree.treeModel.filterNodes(filter.value)"
+                               placeholder="输入名称搜索"/>
+                        <div class=" input-group-btn">
+                            <button class="btn btn-md btn-primary"
+                                    (click)="tree.treeModel.clearFilter();filterComment= '';">
+                                清空
+                            </button>
+                        </div>
+                    </div>
+                    <tree-root #tree
+                               [nodes]="groupNodes"
+                               [options]="options"
+                               (initialized)="onInitialized(tree)"
+                               (activate)="onEvent($event)">
+                        <ng-template #treeNodeTemplate let-node let-index="index">
+                            <i class='fa fa-home' *ngIf="node.data.nodeType == 'platform'"> </i>
+                            <i class='fa fa-cogs' *ngIf="node.data.nodeType == 'property'"> </i>
+                            <i class='fa fa-cog' *ngIf="node.data.nodeType == 'project'"> </i>
+                            <i class='fa fa-tablet' *ngIf="node.data.nodeType == 'device'"> </i>
+                            <i class='fa fa-microchip' *ngIf="node.data.nodeType == 'module'"> </i>
+                            &nbsp;
+                            <span>{{ node.data.name }}</span>
+                        </ng-template>
+                    </tree-root>
+                </div>
+            </div>
+        </div>
+        <div id="line"
+             style="position:absolute;top:0;left:25%;height:100%;width:15px;overflow:hidden;background:none;cursor:w-resize;z-index: 999"
+             data-placement="top" title="拖动改变宽度"></div>
+        <div class="col-md-9 height-full" id="tableWraper"
+             style="user-select: none;position: absolute;left:calc(25% + 0px);">
+            <div class="panel panel-default height-full">
+                <div class="panel-heading"> 当前选择：
+                    <span class="label label-primary">
+                        {{showNodeType()}} : {{nodeModel?.name}}
+                    </span></div>
+                <div class="panel-body height-fullbody height-scroll">
+                    <atnd-device-table (fromChild)="fatherFun($event)" [deviceSoftware]='deviceSoftware'
+                                       [nodeModel]='nodeModel' [platformSelect]='platformSelect' [total]='total'
+                                       [deviceTable]='deviceTable' [unificationId]='unificationId'
+                                       [showDeleteAndHq]='showDeleteAndHq'
+                                       [deviceType]='deviceType'></atnd-device-table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="parRowWraper2" style="position: relative;" [ngStyle]="{'display':showtree ? 'none' : 'block'}">
+        <div class="col-md-12 height-full"
+             style="user-select: none;position: absolute;left:calc(0% + 0px);">
+            <div class="panel panel-default height-full">
+                <div class="panel-heading">设备管理</div>
+                <div class="panel-body height-fullbody height-scroll">
+                    <atnd-device-table (fromChild)="fatherFun($event)" [deviceSoftware]='deviceSoftware'
+                                       [nodeModel]='nodeModel' [platformSelect]='platformSelect' [total]='total'
+                                       [deviceTable]='deviceTable' [unificationId]='unificationId'
+                                       [showDeleteAndHq]='showDeleteAndHq' [deviceType]='deviceType'
+                                       [showtree]='showtree'></atnd-device-table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
